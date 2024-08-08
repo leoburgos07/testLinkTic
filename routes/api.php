@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\TaskController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,6 +16,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::post('register', [AuthController::class, 'register']);
+Route::post('login', [AuthController::class, 'login']);
+
+Route::group(['middleware' => 'auth.jwt'], function () {
+    Route::get('listTasks', [TaskController::class, 'index']);
+    Route::post('storeTask', [TaskController::class, 'store']);
+    Route::get('getTask/{id}', [TaskController::class, 'show']);
+    Route::put('updateTask/{id}', [TaskController::class, 'update']);
+    Route::delete('deleteTask/{id}', [TaskController::class, 'destroy']);
 });
